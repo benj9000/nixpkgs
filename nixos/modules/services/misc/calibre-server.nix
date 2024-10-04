@@ -10,6 +10,7 @@ let
     (lib.mapAttrsToList (k: v: "${k} ${toString v}") (lib.filterAttrs (name: value: value != null) {
       "--listen-on" = cfg.host;
       "--port" = cfg.port;
+      "--url-prefix" = cfg.urlPrefix;
       "--auth-mode" = cfg.auth.mode;
       "--userdb" = cfg.auth.userDb;
     }) ++ [(lib.optionalString (cfg.auth.enable == true) "--enable-auth")])
@@ -70,6 +71,17 @@ in
         description = ''
           The port on which to listen for connections.
           See the [calibre-server documentation](${generatedDocumentationLink}#cmdoption-calibre-server-port) for details.
+        '';
+      };
+
+      urlPrefix = lib.mkOption {
+        type = lib.types.nullOr lib.types.str;
+        default = null;
+        example = "/calibre";
+        description = ''
+          A prefix to prepend to all URLs.
+          Useful if the service runs behind a reverse proxy.
+          See the [calibre-server documentation](${generatedDocumentationLink}#cmdoption-calibre-server-url-prefix) for details.
         '';
       };
 
